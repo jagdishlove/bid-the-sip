@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
-export const users = pgTable("user", {
+export const users = pgTable("bTS_user", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -20,7 +20,7 @@ export const users = pgTable("user", {
 });
 
 export const accounts = pgTable(
-  "account",
+  "bTS_account",
   {
     userId: text("userId")
       .notNull()
@@ -43,7 +43,7 @@ export const accounts = pgTable(
   })
 );
 
-export const sessions = pgTable("session", {
+export const sessions = pgTable("bTS_session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
     .notNull()
@@ -52,7 +52,7 @@ export const sessions = pgTable("session", {
 });
 
 export const verificationTokens = pgTable(
-  "verificationToken",
+  "bTS_verificationToken",
   {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
@@ -66,7 +66,7 @@ export const verificationTokens = pgTable(
 );
 
 export const authenticators = pgTable(
-  "authenticator",
+  "bTS_authenticator",
   {
     credentialID: text("credentialID").notNull().unique(),
     userId: text("userId")
@@ -89,3 +89,12 @@ export const authenticators = pgTable(
 export const bids = pgTable("bid_sip", {
   id: serial("id").primaryKey(),
 });
+
+export const items = pgTable("bTS_items", {
+  id: serial("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+});
+export type Item = typeof items.$inferSelect;
