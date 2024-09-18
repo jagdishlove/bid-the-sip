@@ -1,40 +1,19 @@
-import { auth } from "@/auth";
-import SignIn from "@/components/sign-in";
-import { SignOut } from "@/components/singout-button";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { database } from "@/db/database";
-import { items } from "@/db/schema";
-import { revalidatePath } from "next/cache";
 
 export default async function Home() {
-  const session = await auth();
-
   const allItems = await database.query.items.findMany();
-
-  // if (!session) return null;
-  // const user = session.user;
-  // if (!user) return null;
   return (
     <main className="container mx-auto py-12">
-      {session ? <SignOut /> : <SignIn />}
-      {session?.user?.name}
-      <form
-        action={async (formData: FormData) => {
-          "use server";
-          await database.insert(items).values({
-            name: formData.get("name") as string,
-            userId: session?.user?.id as string,
-          });
-          revalidatePath("/");
-        }}
-      >
-        <Input name="name" placeholder="Name your item" />
-        <Button type="submit">Post Item</Button>
-      </form>
-      {allItems.map((item) => {
-        return <h1 key={item.id}>{item.name}</h1>;
-      })}
+      <h1 className="text-3xl">Items for sale</h1>
+      <div className="flex gap-8 mt-3">
+        {allItems.map((item) => {
+          return (
+            <div key={item.id} className="border flex flex-wrap p-6 w-60">
+              <h1>{item.name}</h1>
+            </div>
+          );
+        })}
+      </div>
     </main>
   );
 }

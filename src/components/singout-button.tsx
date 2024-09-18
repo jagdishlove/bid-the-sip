@@ -9,7 +9,12 @@ export function SignOut() {
         await signOut();
       }}
     >
-      <Button type="submit">Sign Out</Button>
+      <Button
+        className="bg-gradient-to-r from-pink-500  to-blue-500"
+        type="submit"
+      >
+        Sign Out
+      </Button>
     </form>
   );
 }
